@@ -1,0 +1,12 @@
+/* .root {
+  position: fixed;
+  z-index: 10;
+  max-width: 500px;
+  width: 100%;
+  top: 10px;
+  left: 5%;
+  display: flex;
+}
+.root * {
+  box-sizing: border-box;
+} */

@@ -1,0 +1,49 @@
+.root {
+  display: flex;
+  position: fixed;
+  z-index: 10;
+  max-width: 500px;
+  width: 100%;
+  top: 10px;
+  left: 5%;
+  border: 1px solid black;
+}
+.root * {
+  box-sizing: border-box;
+}
+.input {
+  width: 100%;
+  padding: 10px 15px;
+  font-size: 1rem;
+  font-weight: 700;
+  border-right: 2px solid black;
+}
+.input:focus {
+  border: 2px solid blue;
+  outline: none;
+}
+.suggestions {
+  position: absolute;
+  top: 0;
+  transform: translateY(39px);
+  background: #fff;
+  border: 2px solid black;
+  width: 100%;
+  z-index: 10;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+}
+.listItem {
+  padding: 10px 15px;
+  cursor: pointer;
+}
+.listItem:hover {
+  background: #efefef;
+}
+.modeToogle {
+  background: #fff;
+  cursor: pointer;
+  font-size: 1rem;
+}
