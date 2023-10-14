@@ -6,7 +6,12 @@ import useOnclickOutside from "react-cool-onclickoutside";
 import { useEffect } from "react";
 import s from "./Autocomplete.module.css";
 
-export const Autocomplete = ({ isLoaded, onSelect }) => {
+export const Autocomplete = ({
+  isLoaded,
+  onSelect,
+  toogleMode,
+  clearMarkers,
+}) => {
   const {
     ready,
     value,
@@ -80,7 +85,12 @@ export const Autocomplete = ({ isLoaded, onSelect }) => {
         disabled={!ready}
         placeholder="Where are you going?"
       />
-      <button className={s.modeToogle}>Set markers</button>
+      <button className={s.modeToogle} onClick={toogleMode}>
+        Set markers
+      </button>
+      <button className={s.modeToogle} onClick={clearMarkers}>
+        Clear markers
+      </button>
       {status === "OK" && (
         <ul className={s.suggestions}>{renderSuggestions()}</ul>
       )}

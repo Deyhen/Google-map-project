@@ -1,6 +1,8 @@
 import { GoogleMap } from "@react-google-maps/api";
-import React, { useRef } from "react";
+import React, { useCallback, useRef } from "react";
 import { defaultTheme } from "./Theme";
+import { CurrentLocationMarker } from "../CurrentLocationMarker/CurrentLocationMarker";
+import { CustomMarker } from "../CustomMarker/CustomMarker";
 
 const containerStyle = {
   position: "absolute",
@@ -23,7 +25,12 @@ const defaultOptions = {
   styles: defaultTheme,
 };
 
-export const Map = ({ center }) => {
+export const MODES = {
+  MOVE: 0,
+  SET_MARKET: 1,
+};
+
+export const Map = ({ center, mode, markers, onMarkerAdd }) => {
   const mapRef = useRef(undefined);
 
   const onLoad = React.useCallback(function callback(map) {
@@ -34,6 +41,17 @@ export const Map = ({ center }) => {
     mapRef.current = undefined;
   }, []);
 
+  const onClick = useCallback(
+    (loc) => {
+      if (mode === MODES.SET_MARKET) {
+        const lat = loc.latLng.lat();
+        const lng = loc.latLng.lng();
+        onMarkerAdd({ lat, lng });
+      }
+    },
+    [mode, onMarkerAdd]
+  );
+
   return (
     <div className="w-screen">
       <GoogleMap
@@ -43,9 +61,12 @@ export const Map = ({ center }) => {
         onLoad={onLoad}
         onUnmount={onUnmount}
         options={defaultOptions}
+        onClick={onClick}
       >
-        {/* Child components, such as markers, info windows, etc. */}
-        <></>
+        <CurrentLocationMarker position={center} />
+        {markers.map((pos, index) => {
+          return <CustomMarker key={index} position={pos} />;
+        })}
       </GoogleMap>
     </div>
   );
