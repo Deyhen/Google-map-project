@@ -85,12 +85,6 @@ export const Autocomplete = ({
         disabled={!ready}
         placeholder="Where are you going?"
       />
-      <button className={s.modeToogle} onClick={toogleMode}>
-        Set markers
-      </button>
-      <button className={s.modeToogle} onClick={clearMarkers}>
-        Clear markers
-      </button>
       {status === "OK" && (
         <ul className={s.suggestions}>{renderSuggestions()}</ul>
       )}

@@ -1,5 +1,5 @@
 import { useJsApiLoader } from "@react-google-maps/api";
-import { Map, MODES } from "./components/Map/Map";
+import { Map } from "./components/Map/Map";
 import { Autocomplete } from "./components/Autocomplete/Autocomplete";
 import { useCallback, useEffect, useState } from "react";
 import s from "./App.module.css";
@@ -17,33 +17,9 @@ function App() {
     libraries,
   });
 
-  const [mode, setMode] = useState(MODES.MOVE);
-  const [markers, setMarkers] = useState([]);
-
-  const toogleMode = useCallback(() => {
-    switch (mode) {
-      case MODES.MOVE:
-        setMode(MODES.SET_MARKET);
-        break;
-      case MODES.SET_MARKET:
-        setMode(MODES.MOVE);
-        break;
-      default:
-        setMode(MODES.MOVE);
-    }
-  }, [mode]);
-
-  const clearMarkers = () => {
-    setMarkers([]);
-  };
-
   const onPlaceSelect = useCallback((coordinates) => {
     setCenter(coordinates);
   }, []);
-
-  const onMarkerAdd = (coordinates) => {
-    setMarkers([...markers, coordinates]);
-  };
 
   useEffect(() => {
     getBrowserLocation()
@@ -56,24 +32,9 @@ function App() {
   return (
     <div className="App">
       <div className={s.root}>
-        <Autocomplete
-          isLoaded={isLoaded}
-          onSelect={onPlaceSelect}
-          toogleMode={toogleMode}
-          mode={mode}
-          clearMarkers={clearMarkers}
-        />
+        <Autocomplete isLoaded={isLoaded} onSelect={onPlaceSelect} />
       </div>
-      {isLoaded ? (
-        <Map
-          center={center}
-          mode={mode}
-          markers={markers}
-          onMarkerAdd={onMarkerAdd}
-        />
-      ) : (
-        <h2>Loading</h2>
-      )}
+      {isLoaded ? <Map center={center} /> : <h2>Loading</h2>}
     </div>
   );
 }

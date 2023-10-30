@@ -1,8 +1,8 @@
 import { GoogleMap } from "@react-google-maps/api";
-import React, { useCallback, useRef } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { defaultTheme } from "./Theme";
-import { CurrentLocationMarker } from "../CurrentLocationMarker/CurrentLocationMarker";
-import { CustomMarker } from "../CustomMarker/CustomMarker";
+import { CurrentLocationMarker } from "../common/CurrentLocationMarker/CurrentLocationMarker";
+import { CustomMarker } from "../common/CustomMarker/CustomMarker";
 
 const containerStyle = {
   position: "absolute",
@@ -25,13 +25,10 @@ const defaultOptions = {
   styles: defaultTheme,
 };
 
-export const MODES = {
-  MOVE: 0,
-  SET_MARKET: 1,
-};
-
-export const Map = ({ center, mode, markers, onMarkerAdd }) => {
+export const Map = ({ center }) => {
   const mapRef = useRef(undefined);
+
+  const [markers, setMarkers] = useState([]);
 
   const onLoad = React.useCallback(function callback(map) {
     mapRef.current = map;
@@ -41,16 +38,31 @@ export const Map = ({ center, mode, markers, onMarkerAdd }) => {
     mapRef.current = undefined;
   }, []);
 
-  const onClick = useCallback(
-    (loc) => {
-      if (mode === MODES.SET_MARKET) {
-        const lat = loc.latLng.lat();
-        const lng = loc.latLng.lng();
-        onMarkerAdd({ lat, lng });
-      }
+  const onMarkerAdd = useCallback(
+    (coordinates) => {
+      setMarkers([...markers, { ...coordinates, isActive: false }]);
     },
-    [mode, onMarkerAdd]
+    [markers]
   );
+
+  const onClick = useCallback(
+    (location) => {
+      const lat = location.latLng.lat();
+      const lng = location.latLng.lng();
+
+      !markers.some((marker) => marker.lat === lat && marker.lng === lng) &&
+        onMarkerAdd({ lat, lng });
+    },
+    [onMarkerAdd, markers]
+  );
+
+  const onMarkerDelete = (markerForDelete) => {
+    let filteredMarkers = markers.filter(
+      (e) => markerForDelete.lat !== e.lat && markerForDelete.lng !== e.lng
+    );
+    console.log(filteredMarkers);
+    setMarkers([...filteredMarkers]);
+  };
 
   return (
     <div className="w-screen">
@@ -64,8 +76,14 @@ export const Map = ({ center, mode, markers, onMarkerAdd }) => {
         onClick={onClick}
       >
         <CurrentLocationMarker position={center} />
-        {markers.map((pos, index) => {
-          return <CustomMarker key={index} position={pos} />;
+        {markers.map((element, index) => {
+          return (
+            <CustomMarker
+              key={index}
+              position={{ lng: element.lng, lat: element.lat }}
+              onDelete={onMarkerDelete}
+            />
+          );
         })}
       </GoogleMap>
     </div>
